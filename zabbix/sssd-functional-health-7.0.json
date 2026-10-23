@@ -1,0 +1,316 @@
+{
+  "zabbix_export": {
+    "version": "7.0",
+    "template_groups": [
+      {
+        "uuid": "d041492fb4395573af2b95585b8b61d2",
+        "name": "Templates/Applications"
+      }
+    ],
+    "templates": [
+      {
+        "uuid": "8d2600dcabfd54e1a21c128ab1e047d3",
+        "template": "SSSD functional health",
+        "name": "SSSD functional health",
+        "description": "Lightweight Agent 2 UserParameters. Script in /etc/zabbix/scripts, configuration in /etc/zabbix/zabbix_agent2.d. Each poll prints fresh JSON; Zabbix handles history and alerts. No timer or state file.",
+        "groups": [
+          {
+            "name": "Templates/Applications"
+          }
+        ],
+        "macros": [
+          {
+            "macro": "{$SSSD.WATCHDOG.LOG}",
+            "value": "/var/log/sssd-watchdog/sssd.log",
+            "description": "Regex path for dedicated SSSD watchdog log; adapt for rotation before enabling."
+          }
+        ],
+        "items": [
+          {
+            "uuid": "60157ba1d70f51d98d6070125d3bed11",
+            "name": "SSSD: Functional health JSON",
+            "key": "sssd.monitor",
+            "delay": "60s",
+            "history": "7d",
+            "value_type": "TEXT",
+            "trends": "0",
+            "timeout": "25s"
+          },
+          {
+            "uuid": "11963ff52d185c6da4b04a2bee3cfe63",
+            "name": "SSSD: Service active (30s)",
+            "key": "sssd.service",
+            "delay": "30s",
+            "history": "7d",
+            "value_type": "UNSIGNED"
+          },
+          {
+            "uuid": "1666242e9ae25dd19f827c1529901240",
+            "name": "SSSD: service",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.service",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "UNSIGNED",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.service_up"
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "25ab3b6ee40351fc9b5a81ae4f47870e",
+            "name": "SSSD: domain",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.domain",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "UNSIGNED",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.domain_status"
+                ]
+              }
+            ],
+            "description": "1=online, 0=offline, 2=query failed/unknown. Unknown must not count as offline."
+          },
+          {
+            "uuid": "c52d9024bfbe50f99f9fe94ac4429192",
+            "name": "SSSD: domain.result",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.domain.result",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "CHAR",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.domain_result"
+                ]
+              }
+            ],
+            "trends": "0"
+          },
+          {
+            "uuid": "bed7563694a3569db3445635fed9ac42",
+            "name": "SSSD: nss",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.nss",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "UNSIGNED",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.nss_ok"
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "7d64849eafb059de800ba7981f317627",
+            "name": "SSSD: pam",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.pam",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "UNSIGNED",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.pam_ok"
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "7c0c8305581c59b7a32ff0173f64f0f4",
+            "name": "SSSD: pam.latency",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.pam.latency",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "UNSIGNED",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.pam_latency_ms"
+                ]
+              }
+            ],
+            "units": "ms"
+          },
+          {
+            "uuid": "de8efd2dbaf85d34b9fb486ba16d834a",
+            "name": "SSSD: timestamp",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.timestamp",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "UNSIGNED",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.timestamp"
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "15b52f42c06256c2b0e611357259c6ea",
+            "name": "SSSD: pam.result",
+            "type": "DEPENDENT",
+            "key": "sssd.monitor.pam.result",
+            "delay": "0",
+            "history": "7d",
+            "value_type": "CHAR",
+            "master_item": {
+              "key": "sssd.monitor"
+            },
+            "preprocessing": [
+              {
+                "type": "JSONPATH",
+                "parameters": [
+                  "$.pam_result"
+                ]
+              }
+            ],
+            "trends": "0"
+          },
+          {
+            "uuid": "aa613644554758589a5b11e2f18d6144",
+            "name": "SSSD: Watchdog events (enable after log routing)",
+            "type": "ZABBIX_ACTIVE",
+            "key": "logrt[\"{$SSSD.WATCHDOG.LOG}\",\"was terminated by own WATCHDOG\",,,skip]",
+            "delay": "1s",
+            "status": "DISABLED",
+            "history": "7d",
+            "value_type": "LOG",
+            "trends": "0",
+            "description": "Requires a dedicated, agent-readable SSSD event log and active checks. See README. Disabled until configured.",
+            "triggers": [
+              {
+                "uuid": "62e2787c7b2059e888d5b5c7d6ff29da",
+                "expression": "find(/SSSD functional health/logrt[\"{$SSSD.WATCHDOG.LOG}\",\"was terminated by own WATCHDOG\",,,skip],,\"like\",\"was terminated by own WATCHDOG\")=1",
+                "name": "SSSD: Backend terminated by watchdog",
+                "priority": "WARNING",
+                "recovery_mode": "NONE",
+                "manual_close": "YES",
+                "type": "MULTIPLE"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "triggers": [
+      {
+        "uuid": "0a0aab2c85ac598ab8d62ef73a87ffb4",
+        "expression": "nodata(/SSSD functional health/sssd.monitor,3m)=1",
+        "name": "SSSD: No health data for 3 minutes",
+        "priority": "HIGH"
+      },
+      {
+        "uuid": "e06eedccedbe552c86abc5f7532f9d25",
+        "expression": "last(/SSSD functional health/sssd.service)=0",
+        "name": "SSSD: Service is not active",
+        "priority": "HIGH"
+      },
+      {
+        "uuid": "80709ea711f451b48c04c0e712b529cd",
+        "expression": "count(/SSSD functional health/sssd.monitor.pam,3m)>=2 and max(/SSSD functional health/sssd.monitor.pam,#2)=0",
+        "name": "SSSD: PAM account check failed in two consecutive probes",
+        "priority": "HIGH",
+        "dependencies": [
+          {
+            "name": "SSSD: No health data for 3 minutes",
+            "expression": "nodata(/SSSD functional health/sssd.monitor,3m)=1"
+          },
+          {
+            "name": "SSSD: Service is not active",
+            "expression": "last(/SSSD functional health/sssd.service)=0"
+          }
+        ]
+      },
+      {
+        "uuid": "044e983decb857a5914f79ba7ddd5653",
+        "expression": "count(/SSSD functional health/sssd.monitor.nss,3m)>=2 and max(/SSSD functional health/sssd.monitor.nss,#2)=0",
+        "name": "SSSD: SSS NSS lookup failed in two consecutive probes",
+        "priority": "WARNING",
+        "dependencies": [
+          {
+            "name": "SSSD: No health data for 3 minutes",
+            "expression": "nodata(/SSSD functional health/sssd.monitor,3m)=1"
+          },
+          {
+            "name": "SSSD: Service is not active",
+            "expression": "last(/SSSD functional health/sssd.service)=0"
+          }
+        ]
+      },
+      {
+        "uuid": "64850a0b5477597599ea6bdd4cd1db37",
+        "expression": "max(/SSSD functional health/sssd.monitor.domain,#6)=0 and count(/SSSD functional health/sssd.monitor.domain,7m)>=6 and last(/SSSD functional health/sssd.monitor.timestamp)-last(/SSSD functional health/sssd.monitor.timestamp,#6)>=300",
+        "name": "SSSD: FreeIPA domain offline for at least 5 minutes",
+        "priority": "WARNING",
+        "dependencies": [
+          {
+            "name": "SSSD: No health data for 3 minutes",
+            "expression": "nodata(/SSSD functional health/sssd.monitor,3m)=1"
+          },
+          {
+            "name": "SSSD: Service is not active",
+            "expression": "last(/SSSD functional health/sssd.service)=0"
+          }
+        ]
+      },
+      {
+        "uuid": "4eb3e1fd7d5955b19f679b9026de3a42",
+        "expression": "last(/SSSD functional health/sssd.monitor.domain)=2",
+        "name": "SSSD: Cannot determine FreeIPA domain status",
+        "priority": "WARNING",
+        "dependencies": [
+          {
+            "name": "SSSD: No health data for 3 minutes",
+            "expression": "nodata(/SSSD functional health/sssd.monitor,3m)=1"
+          },
+          {
+            "name": "SSSD: Service is not active",
+            "expression": "last(/SSSD functional health/sssd.service)=0"
+          }
+        ]
+      }
+    ]
+  }
+}

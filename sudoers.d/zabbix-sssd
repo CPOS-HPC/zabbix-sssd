@@ -1,0 +1,3 @@
+# Install using visudo as /etc/sudoers.d/zabbix-sssd (root:root, 0440).
+# Match the domain/user in /etc/zabbix/zabbix_agent2.d/sssd.conf exactly.
+zabbix ALL=(root) NOPASSWD: /etc/zabbix/scripts/sssd-monitor.py ipa.example.com sssd_monitor

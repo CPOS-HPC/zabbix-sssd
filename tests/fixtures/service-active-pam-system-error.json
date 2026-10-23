@@ -1,0 +1,9 @@
+{
+  "description": "Synthetic regression for an active SSSD service with a PAM account system error, not a captured host trace. Domain online and NSS success are test assumptions.",
+  "commands": {
+    "systemctl": {"returncode": 0, "stdout": "", "stderr": ""},
+    "sssctl": {"returncode": 0, "stdout": "Online status: Online\n", "stderr": ""},
+    "getent": {"returncode": 0, "stdout": "sssd_monitor:*:1001:1001::/home/sssd_monitor:/bin/bash\n", "stderr": ""},
+    "pam": {"returncode": 0, "stdout": "testing pam_acct_mgmt\n\n", "stderr": "pam_acct_mgmt: System error\n\nPAM Environment:\n - no env -\n"}
+  }
+}
