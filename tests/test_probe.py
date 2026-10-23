@@ -3,12 +3,14 @@ import importlib.util
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import time
 import unittest
+import uuid
 from pathlib import Path
 from unittest.mock import patch
 
@@ -151,6 +153,40 @@ class CommandLineTest(unittest.TestCase):
 
 
 class TemplateTest(unittest.TestCase):
+    def template_uuids(self):
+        values = []
+
+        def collect(node):
+            if isinstance(node, dict):
+                for key, child in node.items():
+                    if key == 'uuid':
+                        values.append(child)
+                    else:
+                        collect(child)
+            elif isinstance(node, list):
+                for child in node:
+                    collect(child)
+
+        collect(json.loads((ROOT / 'zabbix/sssd-functional-health-7.0.json').read_text()))
+        return values
+
+    def test_all_exported_uuids_are_unique_uuidv4(self):
+        values = self.template_uuids()
+        self.assertTrue(values)
+        self.assertEqual(len(values), len(set(values)))
+        for value in values:
+            with self.subTest(uuid=value):
+                self.assertRegex(value, r'\A[0-9a-f]{32}\Z')
+                parsed = uuid.UUID(hex=value)
+                self.assertEqual(parsed.version, 4)
+                self.assertEqual(parsed.variant, uuid.RFC_4122)
+
+    def test_yaml_and_json_export_the_same_uuids(self):
+        text = (ROOT / 'zabbix/sssd-functional-health-7.0.yaml').read_text()
+        values = re.findall(r'^\s*(?:-\s+)?uuid:\s*([0-9a-f]+)\s*$', text, re.MULTILINE)
+        self.assertEqual(values, self.template_uuids())
+        self.assertEqual(len(values), len(re.findall(r'^\s*(?:-\s+)?uuid:', text, re.MULTILINE)))
+
     def test_template_fields_resolve_against_probe_output(self):
         export = json.loads((ROOT / 'zabbix/sssd-functional-health-7.0.json').read_text())['zabbix_export']
         with patch.object(monitor, 'run_command', return_value=(127, '', 0, 'exec_error')):
