@@ -7,8 +7,20 @@ zabbix_export:
   - uuid: 41cee05d1dd84aa98b2d42abfcdff09c
     template: SSSD functional health
     name: SSSD functional health
-    description: Lightweight Agent 2 UserParameters. Script in /etc/zabbix/scripts, configuration in /etc/zabbix/zabbix_agent2.d.
-      Each poll prints fresh JSON; Zabbix handles history and alerts. No timer or state file.
+    description: |-
+      Monitors identity lookup and SSHD PAM account authorization on FreeIPA/SSSD clients. Detects partial failures where sssd.service remains active but PAM account authorization fails.
+
+      Checks:
+      - SSSD service status every 30 seconds.
+      - FreeIPA domain status, SSS NSS user lookup, SSHD PAM account authorization, and check latency every 60 seconds.
+      - Alerts for repeated PAM/NSS failures, sustained domain offline status, domain query errors, and missing health data.
+      - Optional SSSD watchdog log events, disabled by default.
+
+      Setup:
+      Install sssd-monitor.py in /etc/zabbix/scripts/ and sssd.conf in /etc/zabbix/zabbix_agent2.d/. Configure a dedicated FreeIPA monitoring account allowed by the host's SSHD HBAC rules and the matching restricted sudo rule. The JSON master item requires a 25-second timeout.
+
+      Scope:
+      Checks PAM account authorization without a password or SSH session. Does not validate password authentication, Kerberos TGTs, or a complete SSH login. Cached results do not guarantee a fresh FreeIPA connection. No automatic SSSD restart.
     groups:
     - name: Templates/Applications
     macros:
