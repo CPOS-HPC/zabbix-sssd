@@ -23,6 +23,13 @@ zabbix_export:
       Checks PAM account authorization without a password or SSH session. Does not validate password authentication, Kerberos TGTs, or a complete SSH login. Cached results do not guarantee a fresh FreeIPA connection. No automatic SSSD restart.
     groups:
     - name: Templates/Applications
+    tags:
+    - tag: class
+      value: software
+    - tag: target
+      value: sssd
+    - tag: target
+      value: freeipa
     macros:
     - macro: '{$SSSD.WATCHDOG.LOG}'
       value: /var/log/sssd-watchdog/sssd.log

@@ -18,6 +18,20 @@
             "name": "Templates/Applications"
           }
         ],
+        "tags": [
+          {
+            "tag": "class",
+            "value": "software"
+          },
+          {
+            "tag": "target",
+            "value": "sssd"
+          },
+          {
+            "tag": "target",
+            "value": "freeipa"
+          }
+        ],
         "macros": [
           {
             "macro": "{$SSSD.WATCHDOG.LOG}",
